@@ -8,8 +8,7 @@ import clientConfig from '../webpack/client.dev';
 import serverConfig from '../webpack/server.dev';
 
 const DEV = process.env.NODE_ENV === 'development';
-const publicPath = clientConfig.output.publicPath;
-const outputPath = clientConfig.output.path;
+const { publicPath, outputPath } = clientConfig.output;
 const app = express();
 
 // UNIVERSAL HMR + STATS HANDLING GOODNESS:
@@ -21,21 +20,20 @@ if (DEV) {
   app.use(webpackDevMiddleware(multiCompiler, { publicPath }));
   app.use(webpackHotMiddleware(clientCompiler));
   app.use(
-
-    // keeps serverRender updated with arg: { clientStats, outputPath }
-
     webpackHotServerMiddleware(multiCompiler, {
       serverRendererOptions: { outputPath },
     }),
   );
 } else {
-  const clientStats = require('../buildClient/stats.json'); // eslint-disable-line import/no-unresolved
-  const serverRender = require('../buildServer/main.js').default; // eslint-disable-line import/no-unresolved
+  /* eslint-disable import/no-unresolved, global-require */
+  const clientStats = require('../buildClient/stats.json');
+  const serverRender = require('../buildServer/main.js').default;
+  /* eslint-enable import/no-unresolved, global-require */
 
   app.use(publicPath, express.static(outputPath));
   app.use(serverRender({ clientStats, outputPath }));
 }
 
 app.listen(3000, () => {
-  console.log('Listening @ http://localhost:3000/');
+  console.log('Listening @ http://localhost:3000/'); // eslint-disable-line no-console
 });

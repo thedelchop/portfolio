@@ -4,6 +4,8 @@ import Link, { NavLink } from 'redux-first-router-link';
 
 import styles from '../css/Sidebar';
 
+const isActive = (actualPath, expectedPath) => (actualPath === expectedPath ? styles.active : '');
+
 const Sidebar = ({ path, dispatch }) => (
   <div className={styles.sidebar}>
     <h2>SEO-FRIENDLY LINKS</h2>
@@ -55,8 +57,6 @@ const Sidebar = ({ path, dispatch }) => (
     </span>
   </div>
 );
-
-const isActive = (actualPath, expectedPath) => (actualPath === expectedPath ? styles.active : '');
 
 const mapStateToProps = (state) => ({
   path: state.location.pathname,

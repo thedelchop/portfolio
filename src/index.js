@@ -11,13 +11,13 @@ import configureStore from './configureStore';
 const history = createHistory();
 const { store } = configureStore(history, window.REDUX_STATE);
 
-const render = (App) => {
+const render = (AppComponent) => {
   const root = document.getElementById('root');
 
   ReactDOM.hydrate(
     <AppContainer>
       <Provider store={store}>
-        <App />
+        <AppComponent />
       </Provider>
     </AppContainer>,
     root,
@@ -28,8 +28,6 @@ render(App);
 
 if (module.hot && process.env.NODE_ENV === 'development') {
   module.hot.accept('./components/App', () => {
-    const App = require('./components/App').default;
-
-    render(App);
+    render(require('./components/App').default);
   });
 }
