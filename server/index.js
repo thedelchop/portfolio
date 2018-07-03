@@ -17,13 +17,16 @@ if (DEV) {
   const multiCompiler = webpack([clientConfig, serverConfig]);
   const clientCompiler = multiCompiler.compilers[0];
 
-  app.use(webpackDevMiddleware(multiCompiler, { publicPath }));
-  app.use(webpackHotMiddleware(clientCompiler));
   app.use(
-    webpackHotServerMiddleware(multiCompiler, {
-      serverRendererOptions: { outputPath },
+    webpackDevMiddleware(multiCompiler, {
+      publicPath,
+      stats: {
+        colors: true,
+      },
     }),
   );
+  app.use(webpackHotMiddleware(clientCompiler));
+  app.use(webpackHotServerMiddleware(multiCompiler));
 } else {
   /* eslint-disable import/no-unresolved, global-require */
   const clientStats = require('../buildClient/stats.json');
